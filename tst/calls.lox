@@ -1,0 +1,9 @@
+fun printPlus(a, b) {
+  print plus(a, b);
+}
+
+fun plus(a, b) {
+  return a+b;
+}
+
+printPlus(1, 3);

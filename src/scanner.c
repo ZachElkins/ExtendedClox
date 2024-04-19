@@ -83,9 +83,10 @@ static void skipWhitespace() {
             case '\n':
                 scanner.line++;
                 advance();
+                break;
             case '/':
                 if (peekNext() == '/') {
-                    while (peek() != 'n' && !isAtEnd()) advance();
+                    while (peek() != '\n' && !isAtEnd()) advance();
                 } else {
                     return;
                 }
@@ -115,7 +116,7 @@ static TokenType identifierType() {
                 switch (scanner.start[1]) {
                     case 'a': return checkKeyword(2, 3, "lse", TOKEN_FALSE);
                     case 'o': return checkKeyword(2, 1, "r", TOKEN_FOR);
-                    case 'u': return checkKeyword(2, 1, "u", TOKEN_FUN);
+                    case 'u': return checkKeyword(2, 1, "n", TOKEN_FUN);
                 }
             }
             break;
