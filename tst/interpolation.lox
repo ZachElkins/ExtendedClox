@@ -1,0 +1,3 @@
+var trait = "awesome";
+print "You are ${trait}!";
+print "You are ${"cool"}!";

@@ -8,6 +8,7 @@ typedef struct {
     const char* start;
     const char* current;
     int line;
+    bool interpolating;
 } Scanner;
 
 Scanner scanner;
@@ -16,6 +17,7 @@ void initScanner(const char* source) {
     scanner.start = source;
     scanner.current = source;
     scanner.line = 1;
+    scanner.interpolating = false;
 }
 
 static bool isDigit(char c) {
@@ -160,6 +162,13 @@ static Token number() {
 static Token string() {
     while (peek() != '"' && !isAtEnd()) {
         if (peek() == '\n') scanner.line++;
+        else if (!scanner.interpolating && peek() == '$' && peekNext() == '{') {
+            scanner.interpolating = true;
+            advance();
+            Token token = makeToken(TOKEN_INTERPOLATION);
+            advance();
+            return token;
+        }
         advance();
     }
 
@@ -184,7 +193,13 @@ Token scanToken() {
         case '(': return makeToken(TOKEN_LEFT_PAREN);
         case ')': return makeToken(TOKEN_RIGHT_PAREN);
         case '{': return makeToken(TOKEN_LEFT_BRACE);
-        case '}': return makeToken(TOKEN_RIGHT_BRACE);
+        case '}': {
+            if (scanner.interpolating) {
+                scanner.interpolating = false;
+                return string();
+            }
+            return makeToken(TOKEN_RIGHT_BRACE);
+        }
         case ';': return makeToken(TOKEN_SEMICOLON);
         case ',': return makeToken(TOKEN_COMMA);
         case '.': return makeToken(TOKEN_DOT);
