@@ -1,3 +1,29 @@
 var trait = "awesome";
 print "You are ${trait}!";
 print "You are ${"cool"}!";
+
+class Test {
+  init(_x) {
+    this.x = _x;
+  }
+
+  getX() {
+    print this.x;
+    return this.x;
+  }
+}
+
+var t = Test(10);
+t.getX();
+
+fun x(y) {
+    print y;
+}
+
+var a = 1;
+var b = 2;
+var c = 6;
+print "a + b = ${c/(a+b)}";
+print "Class: ${Test}";
+print "Instance: ${t}";
+print "Function: ${x}";

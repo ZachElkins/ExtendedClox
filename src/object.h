@@ -105,6 +105,7 @@ ObjNative* newNative(NativeFn function);
 ObjString* takeString(char* chars, int length);
 ObjString* copyString(const char* chars, int length);
 ObjUpvalue* newUpvalue(Value* slot);
+char* objectToString(Value value);
 void printObject(Value value);
 
 static inline bool isObjType(Value value, ObjType type) {

@@ -472,6 +472,7 @@ static void interpolation(bool canAssign) {
     string(canAssign);
     do {
         expression();
+        emitByte(OP_TO_STRING);
         emitByte(OP_ADD);
     } while (match(TOKEN_INTERPOLATION));
 

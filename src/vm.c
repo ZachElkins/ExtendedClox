@@ -435,6 +435,13 @@ static InterpretResult run() {
                 printf("\n");
                 break;
             }
+            case OP_TO_STRING: {
+                char* str = valueToString(pop());
+                ObjString *strObject = copyString(str, strlen(str));
+                Value value = OBJ_VAL(strObject);
+                push(value);
+                break;
+            }
             case OP_JUMP: {
                 uint16_t offset = READ_SHORT();
                 frame->ip += offset;

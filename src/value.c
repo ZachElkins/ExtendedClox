@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "object.h"
 #include "memory.h"
@@ -26,6 +27,21 @@ void writeValueArray(ValueArray* array, Value value) {
 void freeValueArray(ValueArray* array) {
     FREE_ARRAY(Value, array->values, array->capacity);
     initValueArray(array);
+}
+
+char* valueToString(Value value) {
+    switch (value.type) {
+        case VAL_BOOL: return AS_BOOL(value) ? "true" : "false";
+        case VAL_NIL: return "nil";
+        case VAL_NUMBER: {
+            char* chars = ALLOCATE(char, (size_t)24);
+            snprintf(chars, 24, "%.14g", AS_NUMBER(value));
+            return chars;
+        }
+        case VAL_OBJ: {
+            return objectToString(value);
+        }
+    }
 }
 
 void printValue(Value value) {

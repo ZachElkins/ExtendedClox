@@ -126,6 +126,44 @@ ObjUpvalue* newUpvalue(Value* slot) {
     return upvalue;
 }
 
+static char* functionToString(ObjFunction* function) {
+    if (function->name == NULL) {
+        return "<script>"; // Should not hit this cae
+    }
+
+    char* name = function->name->chars;
+    size_t size = strlen(name) + 6;
+    char* chars = ALLOCATE(char, size);
+    snprintf(chars, size, "<fn %s>", name);
+    return chars;
+}
+
+char *objectToString(Value value) {
+    switch (OBJ_TYPE(value)) {
+        case OBJ_BOUND_METHOD:
+            return functionToString(AS_BOUND_METHOD(value)->method->function);
+        case OBJ_CLASS:
+            return AS_CLASS(value)->name->chars;
+        case OBJ_CLOSURE:
+            return functionToString(AS_CLOSURE(value)->function);
+        case OBJ_FUNCTION:
+            return functionToString(AS_FUNCTION(value));
+        case OBJ_INSTANCE: {
+            char *name = AS_INSTANCE(value)->klass->name->chars;
+            size_t size = strlen(name) + 12;
+            char *chars = ALLOCATE(char, size);
+            snprintf(chars, size, "<%s instance>", name);
+            return chars;
+        }
+        case OBJ_NATIVE:
+            return "<native fn>";
+        case OBJ_STRING:
+            return AS_CSTRING(value);
+        case OBJ_UPVALUE:
+            return "upvalue";
+    }
+}
+
 static void printFunction(ObjFunction* function) {
     if (function->name == NULL) {
         printf("<script>");
