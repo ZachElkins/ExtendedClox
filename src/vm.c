@@ -9,6 +9,7 @@
 #include "object.h"
 #include "memory.h"
 #include "vm.h"
+#include "libc/baseobject.h"
 
 VM vm;
 
@@ -27,10 +28,23 @@ static Value clockNative(int argCount, Value* args) {
     return NUMBER_VAL((double)clock() / CLOCKS_PER_SEC);
 }
 
+static void defineBuiltin(const char* name, Value value) {
+    push(OBJ_VAL(copyString(name, strlen(name))));
+    push(value);
+    tableSet(&vm.builtins, AS_STRING(peek(1)), peek(0));
+    pop();
+    pop();
+}
+
+static void initBuiltins() {
+    defineBuiltin("Object", OBJ_VAL(createObjectType()));
+}
+
 static void resetStack() {
     vm.stackTop = vm.stack;
     vm.frameCount = 0;
     vm.openUpvalues = NULL;
+    initBuiltins();
 }
 
 static void runtimeError(const char* format, ...) {
@@ -105,7 +119,7 @@ Value pop() {
     return *vm.stackTop;
 }
 
-static Value peek(int distance) {
+Value peek(int distance) {
     return vm.stackTop[-1 - distance];
 }
 

@@ -4,12 +4,13 @@ class Test {
     this.x = _x;
   }
 
-  toString() {
-    return "Tests with 10";
-  }
+//  toString() {
+//    return "Tests with 10";
+//  }
 }
+print "test!";
 
-var t = Test(10);
+//var t = Test(10);
 // t.toString();
-print "Instance: ${t}";
+//print "Instance: ${t}";
 //print "Instance: ${t}";

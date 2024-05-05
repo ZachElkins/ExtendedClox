@@ -721,6 +721,14 @@ static void classDeclaration() {
         namedVariable(className, false);
         emitByte(OP_INHERIT);
         classCompiler.hasSuperclass = true;
+    } else {
+        beginScope();
+        addLocal(syntheticToken("super"));
+        defineVariable(0);
+
+        namedVariable(syntheticToken("Object"), false);
+        emitByte(OP_INHERIT);
+        classCompiler.hasSuperclass = true;
     }
 
     namedVariable(className, false);

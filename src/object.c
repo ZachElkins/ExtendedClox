@@ -37,6 +37,31 @@ ObjClass* newClass(ObjString* name) {
     return klass;
 }
 
+static ObjNativeMethod* newNativeMethod(NativeMethodFn function) {
+    ObjNativeMethod* nativeMethod = ALLOCATE_OBJ(ObjNativeMethod, OBJ_NATIVE_METHOD);
+    nativeMethod->function = function;
+    return nativeMethod;
+}
+
+void defineBuiltinMethod(ObjBuiltinClass* klass, const char* name, NativeMethodFn function) {
+    push(OBJ_VAL(copyString(name, strlen(name))));
+    push(OBJ_VAL(newNativeMethod(function)));
+    tableSet(&klass->obj.methods, AS_STRING(peek(1)), peek(0));
+    pop();
+    pop();
+}
+
+ObjBuiltinClass* newBuiltinClass(const char* name) {
+    push(OBJ_VAL(copyString(name, strlen(name))));
+    ObjBuiltinClass* klass = ALLOCATE_OBJ(ObjBuiltinClass, OBJ_BUILTIN_CLASS);
+    klass->obj.name = AS_STRING(peek(0));
+    initTable(&klass->obj.methods);
+    push(OBJ_VAL(klass));
+    pop();
+    pop();
+    return klass;
+}
+
 ObjClosure* newClosure(ObjFunction* function) {
     ObjUpvalue** upvalues = ALLOCATE(ObjUpvalue, function->upvalueCount);
 

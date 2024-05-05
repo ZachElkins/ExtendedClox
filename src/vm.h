@@ -22,6 +22,7 @@ typedef struct {
     Value* stackTop;
     Table globals;
     Table strings;
+    Table builtins;
     ObjString* initString;
     ObjUpvalue* openUpvalues;
 
@@ -46,5 +47,6 @@ void freeVM();
 InterpretResult interpret(const char* source);
 void push(Value value);
 Value pop();
+Value peek(int distance);
 
 #endif //clox_vm_h

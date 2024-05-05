@@ -27,11 +27,13 @@
 
 typedef enum {
     OBJ_BOUND_METHOD,
+    OBJ_BUILTIN_CLASS,
     OBJ_CLASS,
     OBJ_CLOSURE,
     OBJ_FUNCTION,
     OBJ_INSTANCE,
     OBJ_NATIVE,
+    OBJ_NATIVE_METHOD,
     OBJ_STRING,
     OBJ_UPVALUE
 } ObjType;
@@ -51,11 +53,17 @@ typedef struct {
 } ObjFunction;
 
 typedef Value (*NativeFn)(int argCount, Value* args);
+typedef Value (*NativeMethodFn)(Obj* object, int argCount, Value* args);
 
 typedef struct {
     Obj* obj;
     NativeFn function;
 } ObjNative;
+
+typedef struct {
+    Obj* obj;
+    NativeMethodFn function;
+} ObjNativeMethod;
 
 struct ObjString {
     Obj obj;
@@ -85,6 +93,10 @@ typedef struct {
 } ObjClass;
 
 typedef struct {
+    ObjClass obj;
+} ObjBuiltinClass;
+
+typedef struct {
     Obj obj;
     ObjClass* klass;
     Table fields;
@@ -98,6 +110,8 @@ typedef struct {
 
 ObjBoundMethod* newBoundMethod(Value receiver, ObjClosure* method);
 ObjClass* newClass(ObjString* name);
+void defineBuiltinMethod(ObjBuiltinClass* klass, const char* name, NativeMethodFn function);
+ObjBuiltinClass* newBuiltinClass(const char *name);
 ObjClosure* newClosure(ObjFunction* function);
 ObjFunction* newFunction();
 ObjInstance* newInstance(ObjClass* klass);

@@ -39,7 +39,7 @@ char advance() {
     return scanner.current[-1]; // *scanner.current++ ?
 }
 
-char peek() {
+static char peek() {
     return *scanner.current;
 }
 
