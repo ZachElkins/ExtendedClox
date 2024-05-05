@@ -8,7 +8,7 @@ typedef struct {
     const char* start;
     const char* current;
     int line;
-    bool interpolating;
+    int interpolationDepth;
 } Scanner;
 
 Scanner scanner;
@@ -17,7 +17,7 @@ void initScanner(const char* source) {
     scanner.start = source;
     scanner.current = source;
     scanner.line = 1;
-    scanner.interpolating = false;
+    scanner.interpolationDepth = 0;
 }
 
 static bool isDigit(char c) {
@@ -162,8 +162,8 @@ static Token number() {
 static Token string() {
     while (peek() != '"' && !isAtEnd()) {
         if (peek() == '\n') scanner.line++;
-        else if (!scanner.interpolating && peek() == '$' && peekNext() == '{') {
-            scanner.interpolating = true;
+        else if (peek() == '$' && peekNext() == '{') {
+            scanner.interpolationDepth++;
             advance();
             Token token = makeToken(TOKEN_INTERPOLATION);
             advance();
@@ -194,8 +194,8 @@ Token scanToken() {
         case ')': return makeToken(TOKEN_RIGHT_PAREN);
         case '{': return makeToken(TOKEN_LEFT_BRACE);
         case '}': {
-            if (scanner.interpolating) {
-                scanner.interpolating = false;
+            if (scanner.interpolationDepth > 0) {
+                scanner.interpolationDepth--;
                 return string();
             }
             return makeToken(TOKEN_RIGHT_BRACE);

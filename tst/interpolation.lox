@@ -27,3 +27,5 @@ print "a + b = ${c/(a+b)}";
 print "Class: ${Test}";
 print "Instance: ${t}";
 print "Function: ${x}";
+
+print "Outside ${"middle ${"inside!"}"}";
