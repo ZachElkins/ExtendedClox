@@ -11,6 +11,10 @@ class Test {
     print this.x;
     return this.x;
   }
+
+  toString() {
+    return "Tests with ${this.x}";
+  }
 }
 
 var t = Test(10);

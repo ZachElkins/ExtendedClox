@@ -472,7 +472,11 @@ static void interpolation(bool canAssign) {
     string(canAssign);
     do {
         expression();
-        emitByte(OP_TO_STRING);
+//        emitByte(OP_TO_STRING);
+        int slot = makeConstant(OBJ_VAL(copyString("toString", 8)));
+        emitByte(OP_INVOKE);
+        emitByte(slot);
+        emitByte(0);
         emitByte(OP_ADD);
     } while (match(TOKEN_INTERPOLATION));
 
